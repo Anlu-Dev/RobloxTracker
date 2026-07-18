@@ -1,0 +1,1087 @@
+﻿<Window x:Class="RobloxTracker.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Roblox Tracker"
+        Width="1180"
+        Height="760"
+        MinWidth="1020"
+        MinHeight="680"
+        WindowStartupLocation="CenterScreen"
+        Background="#090B10"
+        FontFamily="Segoe UI"
+        UseLayoutRounding="True"
+        SnapsToDevicePixels="True"
+        TextOptions.TextFormattingMode="Display"
+        RenderOptions.BitmapScalingMode="HighQuality">
+
+    <Window.Resources>
+        <!-- Theme -->
+        <SolidColorBrush x:Key="AppBackgroundBrush" Color="#090B10"/>
+        <SolidColorBrush x:Key="SidebarBrush" Color="#0E1118"/>
+        <SolidColorBrush x:Key="SurfaceBrush" Color="#131720"/>
+        <SolidColorBrush x:Key="SurfaceHoverBrush" Color="#191E29"/>
+        <SolidColorBrush x:Key="SurfaceStrongBrush" Color="#1D2330"/>
+        <SolidColorBrush x:Key="StrokeBrush" Color="#242A37"/>
+        <SolidColorBrush x:Key="MutedTextBrush" Color="#8E95A5"/>
+        <SolidColorBrush x:Key="PrimaryTextBrush" Color="#F7F8FB"/>
+        <SolidColorBrush x:Key="AccentBrush" Color="#F13A32"/>
+        <SolidColorBrush x:Key="AccentHoverBrush" Color="#FF5149"/>
+        <SolidColorBrush x:Key="SuccessBrush" Color="#55D6A0"/>
+        <SolidColorBrush x:Key="WarningBrush" Color="#FFC857"/>
+
+        <LinearGradientBrush x:Key="PrimaryGradientBrush" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#FF4B43" Offset="0"/>
+            <GradientStop Color="#D91E31" Offset="1"/>
+        </LinearGradientBrush>
+
+        <LinearGradientBrush x:Key="HeroGradientBrush" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#1B202C" Offset="0"/>
+            <GradientStop Color="#121620" Offset="0.6"/>
+            <GradientStop Color="#18131B" Offset="1"/>
+        </LinearGradientBrush>
+
+        <LinearGradientBrush x:Key="LogoGradientBrush" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#FF584F" Offset="0"/>
+            <GradientStop Color="#D91E31" Offset="1"/>
+        </LinearGradientBrush>
+
+        <DropShadowEffect x:Key="CardShadow"
+                          Color="#000000"
+                          BlurRadius="24"
+                          ShadowDepth="7"
+                          Opacity="0.25"/>
+
+        <DropShadowEffect x:Key="AccentShadow"
+                          Color="#E62B2B"
+                          BlurRadius="22"
+                          ShadowDepth="0"
+                          Opacity="0.38"/>
+
+        <Style TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource PrimaryTextBrush}"/>
+        </Style>
+
+        <!-- Scrollbar -->
+        <Style x:Key="ScrollThumbStyle" TargetType="Thumb">
+            <Setter Property="Background" Value="#343B4A"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Thumb">
+                        <Border x:Name="ThumbBorder"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="4"
+                                Margin="2,0"/>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ThumbBorder" Property="Background" Value="#586174"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="ScrollBar">
+            <Setter Property="Width" Value="9"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ScrollBar">
+                        <Grid Background="Transparent">
+                            <Track x:Name="PART_Track"
+                                   Orientation="{TemplateBinding Orientation}"
+                                   IsDirectionReversed="True">
+                                <Track.DecreaseRepeatButton>
+                                    <RepeatButton Command="ScrollBar.PageUpCommand"
+                                                  Background="Transparent"
+                                                  BorderThickness="0"
+                                                  Opacity="0"/>
+                                </Track.DecreaseRepeatButton>
+                                <Track.Thumb>
+                                    <Thumb Style="{StaticResource ScrollThumbStyle}"/>
+                                </Track.Thumb>
+                                <Track.IncreaseRepeatButton>
+                                    <RepeatButton Command="ScrollBar.PageDownCommand"
+                                                  Background="Transparent"
+                                                  BorderThickness="0"
+                                                  Opacity="0"/>
+                                </Track.IncreaseRepeatButton>
+                            </Track>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Cards -->
+        <Style x:Key="CardStyle" TargetType="Border">
+            <Setter Property="Background" Value="{StaticResource SurfaceBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource StrokeBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="18"/>
+            <Setter Property="Padding" Value="21"/>
+            <Setter Property="Margin" Value="6"/>
+            <Setter Property="Effect" Value="{StaticResource CardShadow}"/>
+        </Style>
+
+        <Style x:Key="StatCardStyle" TargetType="Border" BasedOn="{StaticResource CardStyle}">
+            <Setter Property="MinHeight" Value="102"/>
+            <Setter Property="Padding" Value="19"/>
+        </Style>
+
+        <!-- Buttons -->
+        <Style x:Key="PrimaryButtonStyle" TargetType="Button">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Background" Value="{StaticResource PrimaryGradientBrush}"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Padding" Value="20,0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="ButtonBorder"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="11"
+                                BorderBrush="#55FFFFFF"
+                                BorderThickness="1">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"
+                                              RecognizesAccessKey="True"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ButtonBorder" Property="Effect" Value="{StaticResource AccentShadow}"/>
+                                <Setter TargetName="ButtonBorder" Property="Opacity" Value="0.94"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="ButtonBorder" Property="Opacity" Value="0.78"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="ButtonBorder" Property="Opacity" Value="0.42"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="SecondaryButtonStyle" TargetType="Button" BasedOn="{StaticResource PrimaryButtonStyle}">
+            <Setter Property="Background" Value="#232936"/>
+        </Style>
+
+        <Style x:Key="NavButtonStyle" TargetType="Button">
+            <Setter Property="Foreground" Value="#A9B0BF"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="16,13"/>
+            <Setter Property="Margin" Value="0,3"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Grid>
+                            <Border x:Name="NavBorder"
+                                    Background="{TemplateBinding Background}"
+                                    CornerRadius="11"
+                                    Padding="{TemplateBinding Padding}">
+                                <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                  VerticalAlignment="Center"
+                                                  RecognizesAccessKey="True"/>
+                            </Border>
+                            <Border x:Name="FocusBar"
+                                    Width="3"
+                                    Height="20"
+                                    CornerRadius="2"
+                                    Background="{StaticResource AccentBrush}"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    Opacity="0"/>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="NavBorder" Property="Background" Value="#181D27"/>
+                                <Setter Property="Foreground" Value="White"/>
+                            </Trigger>
+                            <Trigger Property="IsKeyboardFocused" Value="True">
+                                <Setter TargetName="FocusBar" Property="Opacity" Value="1"/>
+                                <Setter TargetName="NavBorder" Property="Background" Value="#202632"/>
+                                <Setter Property="Foreground" Value="White"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="NavBorder" Property="Opacity" Value="0.38"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- ComboBox -->
+        <Style x:Key="ComboBoxStyle" TargetType="ComboBox">
+            <Setter Property="Foreground" Value="#F3F5F8"/>
+            <Setter Property="Background" Value="#181D27"/>
+            <Setter Property="BorderBrush" Value="#303746"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBox">
+                        <Grid x:Name="Root">
+                            <ToggleButton x:Name="DropDownToggle"
+                                          Focusable="False"
+                                          ClickMode="Press"
+                                          Background="{TemplateBinding Background}"
+                                          BorderBrush="{TemplateBinding BorderBrush}"
+                                          BorderThickness="{TemplateBinding BorderThickness}"
+                                          IsChecked="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}">
+                                <ToggleButton.Template>
+                                    <ControlTemplate TargetType="ToggleButton">
+                                        <Border x:Name="ComboBorder"
+                                                Background="{TemplateBinding Background}"
+                                                BorderBrush="{TemplateBinding BorderBrush}"
+                                                BorderThickness="{TemplateBinding BorderThickness}"
+                                                CornerRadius="10"/>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="ComboBorder" Property="BorderBrush" Value="#4B5569"/>
+                                                <Setter TargetName="ComboBorder" Property="Background" Value="#1C222E"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </ToggleButton.Template>
+                            </ToggleButton>
+
+                            <ContentPresenter Margin="13,0,36,0"
+                                              HorizontalAlignment="Left"
+                                              VerticalAlignment="Center"
+                                              IsHitTestVisible="False"
+                                              Content="{TemplateBinding SelectionBoxItem}"
+                                              ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                              ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"/>
+
+                            <Path Width="8"
+                                  Height="5"
+                                  HorizontalAlignment="Right"
+                                  VerticalAlignment="Center"
+                                  Margin="0,0,14,0"
+                                  Fill="#929AAA"
+                                  Data="M 0 0 L 8 0 L 4 5 Z"
+                                  IsHitTestVisible="False"/>
+
+                            <Popup x:Name="PART_Popup"
+                                   IsOpen="{TemplateBinding IsDropDownOpen}"
+                                   Placement="Bottom"
+                                   PlacementTarget="{Binding ElementName=Root}"
+                                   AllowsTransparency="True"
+                                   Focusable="False"
+                                   PopupAnimation="Fade">
+                                <Border MinWidth="{Binding ActualWidth, ElementName=Root}"
+                                        MaxHeight="280"
+                                        Margin="0,5,0,0"
+                                        Padding="5"
+                                        Background="#191E28"
+                                        BorderBrush="#343B4B"
+                                        BorderThickness="1"
+                                        CornerRadius="10"
+                                        Effect="{StaticResource CardShadow}">
+                                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                        <StackPanel IsItemsHost="True"/>
+                                    </ScrollViewer>
+                                </Border>
+                            </Popup>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="Root" Property="Opacity" Value="0.45"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="ComboBoxItem">
+            <Setter Property="Foreground" Value="#DDE1E8"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Padding" Value="11,8"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBoxItem">
+                        <Border x:Name="ItemBorder"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="7"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsHighlighted" Value="True">
+                                <Setter TargetName="ItemBorder" Property="Background" Value="#262D3A"/>
+                                <Setter Property="Foreground" Value="White"/>
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="ItemBorder" Property="Background" Value="#3A2025"/>
+                                <Setter Property="Foreground" Value="#FF766F"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Checkbox -->
+        <Style x:Key="SettingsCheckBoxStyle" TargetType="CheckBox">
+            <Setter Property="Foreground" Value="#E7EAF0"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Margin" Value="0,9"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="CheckBox">
+                        <StackPanel Orientation="Horizontal">
+                            <Border x:Name="CheckBorder"
+                                    Width="20"
+                                    Height="20"
+                                    Background="#181D27"
+                                    BorderBrush="#394151"
+                                    BorderThickness="1"
+                                    CornerRadius="6">
+                                <Path x:Name="CheckMark"
+                                      Width="10"
+                                      Height="8"
+                                      Stroke="White"
+                                      StrokeThickness="2"
+                                      StrokeStartLineCap="Round"
+                                      StrokeEndLineCap="Round"
+                                      Data="M 1 4 L 4 7 L 9 1"
+                                      Visibility="Collapsed"/>
+                            </Border>
+                            <ContentPresenter Margin="10,0,0,0"
+                                              VerticalAlignment="Center"
+                                              RecognizesAccessKey="True"/>
+                        </StackPanel>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="CheckBorder" Property="BorderBrush" Value="#69758B"/>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="CheckBorder" Property="Background" Value="{StaticResource AccentBrush}"/>
+                                <Setter TargetName="CheckBorder" Property="BorderBrush" Value="{StaticResource AccentBrush}"/>
+                                <Setter TargetName="CheckMark" Property="Visibility" Value="Visible"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.45"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Slider -->
+        <Style TargetType="Slider">
+            <Setter Property="Foreground" Value="{StaticResource AccentBrush}"/>
+            <Setter Property="Background" Value="#2B3240"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid Background="{StaticResource AppBackgroundBrush}" ClipToBounds="True">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="246"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Decorative glow -->
+        <Canvas Grid.Column="1" IsHitTestVisible="False" Opacity="0.22">
+            <Ellipse Width="430" Height="430" Canvas.Left="650" Canvas.Top="-250">
+                <Ellipse.Fill>
+                    <RadialGradientBrush>
+                        <GradientStop Color="#E52D38" Offset="0"/>
+                        <GradientStop Color="#00E52D38" Offset="1"/>
+                    </RadialGradientBrush>
+                </Ellipse.Fill>
+                <Ellipse.Effect>
+                    <BlurEffect Radius="45"/>
+                </Ellipse.Effect>
+            </Ellipse>
+            <Ellipse Width="340" Height="340" Canvas.Left="-170" Canvas.Top="520">
+                <Ellipse.Fill>
+                    <RadialGradientBrush>
+                        <GradientStop Color="#3757D9" Offset="0"/>
+                        <GradientStop Color="#003757D9" Offset="1"/>
+                    </RadialGradientBrush>
+                </Ellipse.Fill>
+                <Ellipse.Effect>
+                    <BlurEffect Radius="50"/>
+                </Ellipse.Effect>
+            </Ellipse>
+        </Canvas>
+
+        <!-- Sidebar -->
+        <Border Grid.Column="0"
+                Background="{StaticResource SidebarBrush}"
+                BorderBrush="#202532"
+                BorderThickness="0,0,1,0">
+            <Grid Margin="22,25,22,21">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="43"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Border Width="38"
+                            Height="38"
+                            Background="{StaticResource LogoGradientBrush}"
+                            CornerRadius="11"
+                            Effect="{StaticResource AccentShadow}">
+                        <Grid RenderTransformOrigin="0.5,0.5">
+                            <Grid.RenderTransform>
+                                <RotateTransform Angle="12"/>
+                            </Grid.RenderTransform>
+                            <Border Width="15"
+                                    Height="15"
+                                    Background="#0E1118"
+                                    CornerRadius="2"/>
+                        </Grid>
+                    </Border>
+
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="8,0,0,0">
+                        <TextBlock Text="ROBLOX"
+                                   Foreground="#FF5B53"
+                                   FontSize="10"
+                                   FontWeight="Bold"/>
+                        <TextBlock Text="TRACKER"
+                                   FontSize="20"
+                                   FontWeight="Bold"
+                                   Margin="0,-1,0,0"/>
+                    </StackPanel>
+                </Grid>
+
+                <StackPanel Grid.Row="1" Margin="0,48,0,0">
+                    <TextBlock x:Name="MenuLabelText"
+                               Text="MENU"
+                               Foreground="#596071"
+                               FontSize="10"
+                               FontWeight="Bold"
+                               Margin="14,0,0,9"/>
+
+                    <Button x:Name="DashboardNavButton"
+                            Style="{StaticResource NavButtonStyle}"
+                            Content="▦    Dashboard"
+                            Background="#202632"
+                            Foreground="White"
+                            Click="DashboardNavButton_Click"/>
+
+                    <Button x:Name="SocialNavButton"
+                            Style="{StaticResource NavButtonStyle}"
+                            Content="♟    Social"
+                            Click="SocialNavButton_Click"/>
+
+                    <Button x:Name="InventoryNavButton"
+                            Style="{StaticResource NavButtonStyle}"
+                            Content="◇    Inventory   · BETA"
+                            Click="InventoryNavButton_Click"/>
+
+                    <Button x:Name="GroupsNavButton"
+                            Style="{StaticResource NavButtonStyle}"
+                            Content="◈    Groups"
+                            Click="GroupsNavButton_Click"/>
+
+                    <Button x:Name="SettingsNavButton"
+                            Style="{StaticResource NavButtonStyle}"
+                            Content="⚙    Settings"
+                            Click="SettingsNavButton_Click"/>
+                </StackPanel>
+
+                <Border Grid.Row="2"
+                        Background="#151922"
+                        BorderBrush="#242A37"
+                        BorderThickness="1"
+                        CornerRadius="12"
+                        Padding="12,10">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Border Width="8"
+                                Height="8"
+                                Background="{StaticResource SuccessBrush}"
+                                CornerRadius="4"
+                                VerticalAlignment="Center"
+                                Margin="0,0,9,0"/>
+                        <StackPanel Grid.Column="1">
+                            <TextBlock x:Name="TrackerOnlineText"
+                                       Text="TRACKER ONLINE"
+                                       Foreground="#C6CBD5"
+                                       FontSize="10"
+                                       FontWeight="SemiBold"/>
+                            <TextBlock Text="Version 1.7 Beta"
+                                       Foreground="#656D7D"
+                                       FontSize="10"
+                                       Margin="0,2,0,0"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+            </Grid>
+        </Border>
+
+        <!-- Main -->
+        <Grid Grid.Column="1" Margin="32,25,32,24">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="20"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- Search bar -->
+            <Border Background="#12161E"
+                    BorderBrush="#252B38"
+                    BorderThickness="1"
+                    CornerRadius="15"
+                    Padding="7"
+                    Effect="{StaticResource CardShadow}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="45"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="140"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Border Width="34"
+                            Height="34"
+                            Background="#1C222D"
+                            CornerRadius="10"
+                            VerticalAlignment="Center">
+                        <TextBlock Text="⌕"
+                                   Foreground="#808899"
+                                   FontSize="22"
+                                   FontFamily="Segoe UI Symbol"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   Margin="0,-3,0,0"/>
+                    </Border>
+
+                    <TextBox x:Name="UsernameInput"
+                             Grid.Column="1"
+                             Height="48"
+                             Background="Transparent"
+                             Foreground="White"
+                             CaretBrush="#FF5B53"
+                             BorderThickness="0"
+                             FontSize="15"
+                             Padding="5,12"
+                             VerticalContentAlignment="Center"
+                             ToolTip="Roblox 사용자명을 입력하세요"
+                             KeyDown="UsernameInput_KeyDown"/>
+
+                    <Button x:Name="SearchButton"
+                            Grid.Column="2"
+                            Height="48"
+                            Content="CONNECT  →"
+                            Style="{StaticResource PrimaryButtonStyle}"
+                            Click="SearchButton_Click"/>
+                </Grid>
+            </Border>
+
+            <Grid Grid.Row="2">
+                <!-- Dashboard -->
+                <ScrollViewer x:Name="DashboardPanel"
+                              Padding="0,0,10,10"
+                              VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+                        <Grid Margin="6,0,6,14">
+                            <StackPanel>
+                                <TextBlock x:Name="DashboardSectionText"
+                                           Text="OVERVIEW"
+                                           Foreground="{StaticResource AccentBrush}"
+                                           FontSize="11"
+                                           FontWeight="Bold"/>
+                                <TextBlock x:Name="DashboardTitleText"
+                                           Text="Account Dashboard"
+                                           FontSize="27"
+                                           FontWeight="Bold"
+                                           Margin="0,2,0,0"/>
+                            </StackPanel>
+                            <TextBlock x:Name="StatusText"
+                                       Text="Roblox 사용자명을 입력하세요."
+                                       Foreground="{StaticResource MutedTextBrush}"
+                                       FontSize="12"
+                                       HorizontalAlignment="Right"
+                                       VerticalAlignment="Bottom"
+                                       Margin="0,0,0,5"/>
+                        </Grid>
+
+                        <Border Background="{StaticResource HeroGradientBrush}"
+                                BorderBrush="#2A303D"
+                                BorderThickness="1"
+                                CornerRadius="22"
+                                Padding="25"
+                                Margin="6,0,6,13"
+                                Effect="{StaticResource CardShadow}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="183"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="130"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Grid Width="156" Height="156" HorizontalAlignment="Left">
+                                    <Border Background="#292F3B"
+                                            BorderBrush="#3A4252"
+                                            BorderThickness="1"
+                                            CornerRadius="24"
+                                            Padding="5">
+                                        <Border Background="#202530" CornerRadius="19" ClipToBounds="True">
+                                            <Image x:Name="AvatarImage" Stretch="UniformToFill"/>
+                                        </Border>
+                                    </Border>
+                                    <Border Width="22"
+                                            Height="22"
+                                            HorizontalAlignment="Right"
+                                            VerticalAlignment="Bottom"
+                                            Margin="0,0,2,2"
+                                            Background="#11151D"
+                                            CornerRadius="11"
+                                            Padding="4">
+                                        <Border Background="{StaticResource SuccessBrush}" CornerRadius="7"/>
+                                    </Border>
+                                </Grid>
+
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="4,0,15,0">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock x:Name="DisplayNameText"
+                                                   Text="Display Name"
+                                                   FontSize="29"
+                                                   FontWeight="Bold"/>
+                                        <Border x:Name="VerifiedBadge"
+                                                Visibility="Collapsed"
+                                                Width="23"
+                                                Height="23"
+                                                Background="#168CFF"
+                                                CornerRadius="12"
+                                                Margin="10,8,0,0">
+                                            <TextBlock Text="✓"
+                                                       FontSize="12"
+                                                       FontWeight="Bold"
+                                                       HorizontalAlignment="Center"
+                                                       VerticalAlignment="Center"/>
+                                        </Border>
+                                    </StackPanel>
+
+                                    <TextBlock x:Name="UsernameText"
+                                               Text="@username"
+                                               Foreground="#9CA3B2"
+                                               FontSize="15"
+                                               Margin="0,2,0,13"/>
+
+                                    <StackPanel Orientation="Horizontal">
+                                        <Border x:Name="AccountStatusBorder"
+                                                Background="#193A2D"
+                                                BorderBrush="#285842"
+                                                BorderThickness="1"
+                                                CornerRadius="8"
+                                                Padding="10,4">
+                                            <TextBlock x:Name="AccountStatusText"
+                                                       Text="NOT CONNECTED"
+                                                       Foreground="{StaticResource SuccessBrush}"
+                                                       FontSize="10"
+                                                       FontWeight="Bold"/>
+                                        </Border>
+                                    </StackPanel>
+
+                                    <TextBlock x:Name="DescriptionText"
+                                               Text="사용자를 검색하면 소개글이 표시됩니다."
+                                               Foreground="#B4BAC6"
+                                               FontSize="13"
+                                               LineHeight="19"
+                                               TextWrapping="Wrap"
+                                               MaxHeight="60"
+                                               Margin="0,14,10,0"/>
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="2" VerticalAlignment="Center">
+                                    <TextBlock x:Name="ProfileSourceText"
+                                               Text="ROBLOX PROFILE"
+                                               Foreground="#666E7E"
+                                               FontSize="9"
+                                               FontWeight="Bold"
+                                               HorizontalAlignment="Right"/>
+                                    <TextBlock x:Name="LiveDataText"
+                                               Text="LIVE DATA"
+                                               Foreground="#FF635C"
+                                               FontSize="11"
+                                               FontWeight="Bold"
+                                               HorizontalAlignment="Right"
+                                               Margin="0,4,0,0"/>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+
+                        <UniformGrid Columns="3">
+                            <Border Style="{StaticResource StatCardStyle}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="38"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel VerticalAlignment="Center">
+                                        <TextBlock x:Name="UserIdLabelText" Text="USER ID" Foreground="#777F90" FontSize="10" FontWeight="SemiBold"/>
+                                        <TextBlock x:Name="UserIdText" Text="—" FontSize="20" FontWeight="SemiBold" Margin="0,6,0,0"/>
+                                    </StackPanel>
+                                    <Border Grid.Column="1" Width="34" Height="34" Background="#262233" CornerRadius="10">
+                                        <TextBlock Text="#" Foreground="#B594FF" FontSize="16" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                </Grid>
+                            </Border>
+
+                            <Border Style="{StaticResource StatCardStyle}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="38"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel VerticalAlignment="Center">
+                                        <TextBlock x:Name="CreatedLabelText" Text="CREATED" Foreground="#777F90" FontSize="10" FontWeight="SemiBold"/>
+                                        <TextBlock x:Name="CreatedText" Text="—" FontSize="19" FontWeight="SemiBold" Margin="0,6,0,0"/>
+                                    </StackPanel>
+                                    <Border Grid.Column="1" Width="34" Height="34" Background="#1D2D35" CornerRadius="10">
+                                        <TextBlock Text="◷" Foreground="#6ED6E8" FontSize="17" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                </Grid>
+                            </Border>
+
+                            <Border Style="{StaticResource StatCardStyle}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="38"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel VerticalAlignment="Center">
+                                        <TextBlock x:Name="AccountAgeLabelText" Text="ACCOUNT AGE" Foreground="#777F90" FontSize="10" FontWeight="SemiBold"/>
+                                        <TextBlock x:Name="AccountAgeText" Text="—" FontSize="19" FontWeight="SemiBold" Margin="0,6,0,0"/>
+                                    </StackPanel>
+                                    <Border Grid.Column="1" Width="34" Height="34" Background="#302A1E" CornerRadius="10">
+                                        <TextBlock Text="⌛" Foreground="{StaticResource WarningBrush}" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                </Grid>
+                            </Border>
+
+                            <Border Style="{StaticResource StatCardStyle}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="38"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel VerticalAlignment="Center">
+                                        <TextBlock x:Name="FriendsLabelText" Text="FRIENDS" Foreground="#777F90" FontSize="10" FontWeight="SemiBold"/>
+                                        <TextBlock x:Name="FriendsText" Text="—" FontSize="22" FontWeight="Bold" Margin="0,6,0,0"/>
+                                    </StackPanel>
+                                    <Border Grid.Column="1" Width="34" Height="34" Background="#202C3A" CornerRadius="10">
+                                        <TextBlock Text="♟" Foreground="#6FAEFF" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                </Grid>
+                            </Border>
+
+                            <Border Style="{StaticResource StatCardStyle}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="38"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel VerticalAlignment="Center">
+                                        <TextBlock x:Name="FollowersLabelText" Text="FOLLOWERS" Foreground="#777F90" FontSize="10" FontWeight="SemiBold"/>
+                                        <TextBlock x:Name="FollowersText" Text="—" FontSize="22" FontWeight="Bold" Margin="0,6,0,0"/>
+                                    </StackPanel>
+                                    <Border Grid.Column="1" Width="34" Height="34" Background="#1E3028" CornerRadius="10">
+                                        <TextBlock Text="↗" Foreground="{StaticResource SuccessBrush}" FontSize="17" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                </Grid>
+                            </Border>
+
+                            <Border Style="{StaticResource StatCardStyle}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="38"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel VerticalAlignment="Center">
+                                        <TextBlock x:Name="FollowingLabelText" Text="FOLLOWING" Foreground="#777F90" FontSize="10" FontWeight="SemiBold"/>
+                                        <TextBlock x:Name="FollowingText" Text="—" FontSize="22" FontWeight="Bold" Margin="0,6,0,0"/>
+                                    </StackPanel>
+                                    <Border Grid.Column="1" Width="34" Height="34" Background="#352127" CornerRadius="10">
+                                        <TextBlock Text="→" Foreground="#FF7770" FontSize="17" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                </Grid>
+                            </Border>
+                        </UniformGrid>
+                    </StackPanel>
+                </ScrollViewer>
+
+                <!-- Social -->
+                <ScrollViewer x:Name="SocialPanel" Visibility="Collapsed" Padding="0,0,10,10" VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+                        <Grid Margin="6,0,6,14">
+                            <StackPanel>
+                                <TextBlock x:Name="SocialSectionText" Text="SOCIAL NETWORK" Foreground="{StaticResource AccentBrush}" FontSize="11" FontWeight="Bold"/>
+                                <TextBlock x:Name="SocialTitleText" Text="Social" FontSize="29" FontWeight="Bold" Margin="0,2,0,0"/>
+                            </StackPanel>
+                            <Border Background="#171C25" BorderBrush="#272E3B" BorderThickness="1" CornerRadius="10" Padding="11,6" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+                                <TextBlock x:Name="PublicConnectionsText" Text="PUBLIC CONNECTIONS" Foreground="#858D9D" FontSize="10" FontWeight="SemiBold"/>
+                            </Border>
+                        </Grid>
+
+                        <UniformGrid Columns="3">
+                            <Border Style="{StaticResource StatCardStyle}">
+                                <StackPanel>
+                                    <TextBlock x:Name="SocialFriendsLabelText" Text="FRIENDS" Foreground="#777F90" FontSize="10"/>
+                                    <TextBlock x:Name="SocialFriendsText" Text="—" FontSize="25" FontWeight="Bold" Margin="0,6,0,0"/>
+                                </StackPanel>
+                            </Border>
+                            <Border Style="{StaticResource StatCardStyle}">
+                                <StackPanel>
+                                    <TextBlock x:Name="SocialFollowersLabelText" Text="FOLLOWERS" Foreground="#777F90" FontSize="10"/>
+                                    <TextBlock x:Name="SocialFollowersText" Text="—" FontSize="25" FontWeight="Bold" Margin="0,6,0,0"/>
+                                </StackPanel>
+                            </Border>
+                            <Border Style="{StaticResource StatCardStyle}">
+                                <StackPanel>
+                                    <TextBlock x:Name="SocialFollowingLabelText" Text="FOLLOWING" Foreground="#777F90" FontSize="10"/>
+                                    <TextBlock x:Name="SocialFollowingText" Text="—" FontSize="25" FontWeight="Bold" Margin="0,6,0,0"/>
+                                </StackPanel>
+                            </Border>
+                        </UniformGrid>
+
+                        <Grid Margin="7,23,7,12">
+                            <StackPanel>
+                                <TextBlock x:Name="FriendsHeadingText" Text="FRIENDS" FontSize="20" FontWeight="Bold"/>
+                                <TextBlock x:Name="FriendsSubtitleText" Text="Roblox 친구 목록" Foreground="#737B8B" FontSize="11" Margin="0,3,0,0"/>
+                            </StackPanel>
+                            <TextBlock x:Name="FriendsListStatusText" Text="친구 목록을 불러옵니다." Foreground="{StaticResource MutedTextBrush}" FontSize="12" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                        </Grid>
+                        <WrapPanel x:Name="FriendsWrapPanel"/>
+                    </StackPanel>
+                </ScrollViewer>
+
+                <!-- Inventory -->
+                <ScrollViewer x:Name="InventoryPanel" Visibility="Collapsed" Padding="0,0,10,10" VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+                        <Grid Margin="6,0,6,14">
+                            <StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock x:Name="InventorySectionText" Text="INVENTORY" Foreground="{StaticResource WarningBrush}" FontSize="11" FontWeight="Bold"/>
+                                    <Border Background="#3B301A" BorderBrush="#695326" BorderThickness="1" CornerRadius="7" Padding="7,2" Margin="8,-2,0,0">
+                                        <TextBlock Text="BETA" Foreground="{StaticResource WarningBrush}" FontSize="9" FontWeight="Bold"/>
+                                    </Border>
+                                </StackPanel>
+                                <TextBlock x:Name="InventoryTitleText" Text="Inventory" FontSize="29" FontWeight="Bold" Margin="0,4,0,0"/>
+                            </StackPanel>
+                            <TextBlock x:Name="InventoryStatusText" Text="BETA 기능입니다." Foreground="{StaticResource MutedTextBrush}" FontSize="12" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,0,5"/>
+                        </Grid>
+
+                        <Border Style="{StaticResource CardStyle}" Padding="17" Margin="6,0,6,18">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="200"/>
+                                    <ColumnDefinition Width="28"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="200"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel VerticalAlignment="Center" Margin="0,0,12,0">
+                                    <TextBlock x:Name="InventorySortLabelText" Text="SORT" Foreground="#858D9D" FontSize="10" FontWeight="Bold"/>
+                                    <TextBlock x:Name="InventorySortHintText" Text="정렬" Foreground="#555D6C" FontSize="9" Margin="0,2,0,0"/>
+                                </StackPanel>
+                                <ComboBox x:Name="InventorySortComboBox" Grid.Column="1" SelectedIndex="0" Style="{StaticResource ComboBoxStyle}" SelectionChanged="InventoryFilterChanged">
+                                    <ComboBoxItem Content="CATEGORY" Tag="Category"/>
+                                    <ComboBoxItem Content="NEWEST" Tag="Newest"/>
+                                    <ComboBoxItem Content="OLDEST" Tag="Oldest"/>
+                                    <ComboBoxItem Content="NAME A-Z" Tag="NameAZ"/>
+                                    <ComboBoxItem Content="NAME Z-A" Tag="NameZA"/>
+                                </ComboBox>
+                                <StackPanel Grid.Column="3" VerticalAlignment="Center" Margin="0,0,12,0">
+                                    <TextBlock x:Name="InventoryTypeLabelText" Text="TYPE" Foreground="#858D9D" FontSize="10" FontWeight="Bold"/>
+                                    <TextBlock x:Name="InventoryTypeHintText" Text="종류" Foreground="#555D6C" FontSize="9" Margin="0,2,0,0"/>
+                                </StackPanel>
+                                <ComboBox x:Name="InventoryCategoryComboBox" Grid.Column="4" SelectedIndex="0" Style="{StaticResource ComboBoxStyle}" SelectionChanged="InventoryFilterChanged">
+                                    <ComboBoxItem Content="ALL" Tag="ALL"/>
+                                    <ComboBoxItem Content="ACCESSORIES" Tag="ACCESSORIES"/>
+                                    <ComboBoxItem Content="CLOTHING" Tag="CLOTHING"/>
+                                    <ComboBoxItem Content="HEADS &amp; FACES" Tag="HEADS &amp; FACES"/>
+                                    <ComboBoxItem Content="ANIMATIONS" Tag="ANIMATIONS"/>
+                                    <ComboBoxItem Content="GEAR" Tag="GEAR"/>
+                                    <ComboBoxItem Content="OTHER" Tag="OTHER"/>
+                                </ComboBox>
+                            </Grid>
+                        </Border>
+
+                        <WrapPanel x:Name="InventoryWrapPanel"/>
+                        <Button x:Name="LoadMoreInventoryButton" Content="LOAD MORE  ↓" Width="175" Height="44" Margin="7,20,0,20" HorizontalAlignment="Left" Visibility="Collapsed" Style="{StaticResource PrimaryButtonStyle}" Click="LoadMoreInventoryButton_Click"/>
+                    </StackPanel>
+                </ScrollViewer>
+
+                <!-- Groups -->
+                <ScrollViewer x:Name="GroupsPanel" Visibility="Collapsed" Padding="0,0,10,10" VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+                        <Grid Margin="6,0,6,14">
+                            <StackPanel>
+                                <TextBlock x:Name="GroupsSectionText" Text="COMMUNITIES" Foreground="{StaticResource AccentBrush}" FontSize="11" FontWeight="Bold"/>
+                                <TextBlock x:Name="GroupsTitleText" Text="Groups" FontSize="29" FontWeight="Bold" Margin="0,2,0,0"/>
+                            </StackPanel>
+                            <TextBlock x:Name="GroupsStatusText" Text="계정을 연결한 뒤 Groups를 열어주세요." Foreground="{StaticResource MutedTextBrush}" FontSize="12" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,0,5"/>
+                        </Grid>
+
+                        <Border Height="52" Background="#12161E" BorderBrush="#272E3B" BorderThickness="1" CornerRadius="13" Margin="6,0,6,18" Padding="7,0">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="40"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="⌕" Foreground="#737B8B" FontFamily="Segoe UI Symbol" FontSize="21" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,-2,0,0"/>
+                                <TextBox x:Name="GroupSearchInput" Grid.Column="1" Background="Transparent" Foreground="White" CaretBrush="#FF5B53" BorderThickness="0" FontSize="14" Padding="4,12" VerticalContentAlignment="Center" ToolTip="그룹 이름 검색" TextChanged="GroupSearchInput_TextChanged"/>
+                            </Grid>
+                        </Border>
+                        <WrapPanel x:Name="GroupsWrapPanel"/>
+                    </StackPanel>
+                </ScrollViewer>
+
+                <!-- Settings -->
+                <ScrollViewer x:Name="SettingsPanel" Visibility="Collapsed" Padding="0,0,10,10" VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+                        <Grid Margin="6,0,6,14">
+                            <StackPanel>
+                                <TextBlock x:Name="SettingsSectionText" Text="PREFERENCES" Foreground="{StaticResource AccentBrush}" FontSize="11" FontWeight="Bold"/>
+                                <TextBlock x:Name="SettingsTitleText" Text="Application Settings" FontSize="29" FontWeight="Bold" Margin="0,2,0,0"/>
+                            </StackPanel>
+                            <Border Background="#171C25" BorderBrush="#272E3B" BorderThickness="1" CornerRadius="10" Padding="11,6" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+                                <TextBlock x:Name="LocalSettingsText" Text="LOCAL SETTINGS" Foreground="#858D9D" FontSize="10" FontWeight="SemiBold"/>
+                            </Border>
+                        </Grid>
+
+                        <Border Style="{StaticResource CardStyle}" Padding="23">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="55"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Border Width="42" Height="42" Background="#352127" CornerRadius="12" VerticalAlignment="Top">
+                                    <TextBlock Text="♙" Foreground="#FF7770" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <StackPanel Grid.Column="1">
+                                    <TextBlock x:Name="AccountSectionText" Text="ACCOUNT" Foreground="{StaticResource AccentBrush}" FontSize="10" FontWeight="Bold"/>
+                                    <TextBlock x:Name="AccountSettingsTitleText" Text="계정 연결 설정" FontSize="19" FontWeight="SemiBold" Margin="0,4,0,7"/>
+                                    <TextBlock x:Name="AccountSettingsDescriptionText" Text="앱을 다시 실행했을 때 사용할 계정 연결 방식을 정합니다." Foreground="{StaticResource MutedTextBrush}" FontSize="11" Margin="0,0,0,5"/>
+                                    <CheckBox x:Name="RememberUsernameCheckBox" Content="마지막 사용자명 기억" Style="{StaticResource SettingsCheckBoxStyle}" Checked="RememberUsernameCheckBox_Changed" Unchecked="RememberUsernameCheckBox_Changed"/>
+                                    <CheckBox x:Name="AutoConnectCheckBox" Content="앱 실행 시 자동 연결" Style="{StaticResource SettingsCheckBoxStyle}"/>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+
+                        <Border Style="{StaticResource CardStyle}" Padding="23">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="55"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Border Width="42" Height="42" Background="#262233" CornerRadius="12" VerticalAlignment="Top">
+                                    <TextBlock Text="文" Foreground="#B594FF" FontSize="19" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <StackPanel Grid.Column="1">
+                                    <TextBlock x:Name="LanguageSectionText" Text="LANGUAGE" Foreground="#B594FF" FontSize="10" FontWeight="Bold"/>
+                                    <TextBlock x:Name="LanguageTitleText" Text="언어" FontSize="19" FontWeight="SemiBold" Margin="0,4,0,5"/>
+                                    <TextBlock x:Name="LanguageDescriptionText" Text="앱에서 사용할 언어를 선택합니다." Foreground="{StaticResource MutedTextBrush}" FontSize="11" Margin="0,0,0,12"/>
+                                    <ComboBox x:Name="LanguageComboBox"
+                                              Width="280"
+                                              HorizontalAlignment="Left"
+                                              Style="{StaticResource ComboBoxStyle}"
+                                              SelectedIndex="0"
+                                              SelectionChanged="LanguageComboBox_SelectionChanged">
+                                        <ComboBoxItem Content="한국어" Tag="ko"/>
+                                        <ComboBoxItem Content="English" Tag="en"/>
+                                    </ComboBox>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+
+                        <Border Style="{StaticResource CardStyle}" Padding="23">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="55"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Border Width="42" Height="42" Background="#302A1E" CornerRadius="12" VerticalAlignment="Top">
+                                    <TextBlock Text="⌁" Foreground="{StaticResource WarningBrush}" FontSize="22" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <StackPanel Grid.Column="1">
+                                    <TextBlock x:Name="ApiSectionText" Text="ROBLOX API" Foreground="{StaticResource WarningBrush}" FontSize="10" FontWeight="Bold"/>
+                                    <TextBlock x:Name="ApiSettingsTitleText" Text="요청 안정성" FontSize="19" FontWeight="SemiBold" Margin="0,4,0,7"/>
+                                    <CheckBox x:Name="SafeApiModeCheckBox" Content="API 안전 모드 사용 (추천)" Style="{StaticResource SettingsCheckBoxStyle}"/>
+                                    <Border Height="1" Background="#252B37" Margin="0,9,0,15"/>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="90"/>
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel>
+                                            <TextBlock x:Name="ApiDelayLabelText" Text="요청 간격" FontSize="14" FontWeight="SemiBold"/>
+                                            <TextBlock x:Name="ApiDelayDescriptionText" Text="간격이 길수록 429 오류가 줄어듭니다." Foreground="{StaticResource MutedTextBrush}" FontSize="11" Margin="0,3,0,0"/>
+                                        </StackPanel>
+                                        <Border Grid.Column="1" Background="#302A1E" CornerRadius="9" Padding="10,6" HorizontalAlignment="Right">
+                                            <TextBlock x:Name="ApiDelayValueText" Text="1.5초" Foreground="{StaticResource WarningBrush}" FontSize="14" FontWeight="Bold"/>
+                                        </Border>
+                                    </Grid>
+                                    <Slider x:Name="ApiDelaySlider" Minimum="500" Maximum="5000" Value="1500" TickFrequency="500" IsSnapToTickEnabled="True" Margin="0,16,0,3" ValueChanged="ApiDelaySlider_ValueChanged"/>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+
+                        <Border Style="{StaticResource CardStyle}" Padding="23">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="55"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Border Width="42" Height="42" Background="#202C3A" CornerRadius="12" VerticalAlignment="Top">
+                                    <TextBlock Text="▦" Foreground="#6FAEFF" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <StackPanel Grid.Column="1">
+                                    <TextBlock x:Name="StartupSectionText" Text="STARTUP" Foreground="#6FAEFF" FontSize="10" FontWeight="Bold"/>
+                                    <TextBlock x:Name="StartupTitleText" Text="기본 화면" FontSize="19" FontWeight="SemiBold" Margin="0,4,0,5"/>
+                                    <TextBlock x:Name="StartupDescriptionText" Text="계정 연결 후 처음 표시할 탭을 선택합니다." Foreground="{StaticResource MutedTextBrush}" FontSize="11" Margin="0,0,0,12"/>
+                                    <ComboBox x:Name="DefaultTabComboBox" Width="280" HorizontalAlignment="Left" Style="{StaticResource ComboBoxStyle}" SelectedIndex="0">
+                                        <ComboBoxItem Content="Dashboard" Tag="Dashboard"/>
+                                        <ComboBoxItem Content="Social" Tag="Social"/>
+                                        <ComboBoxItem Content="Groups" Tag="Groups"/>
+                                        <ComboBoxItem Content="Inventory (Beta)" Tag="Inventory"/>
+                                    </ComboBox>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+
+                        <Grid Margin="6,15,6,20">
+                            <StackPanel Orientation="Horizontal">
+                                <Button x:Name="SaveSettingsButton" Content="SAVE SETTINGS  ✓" Width="180" Height="46" Style="{StaticResource PrimaryButtonStyle}" Click="SaveSettingsButton_Click"/>
+                                <Button x:Name="ResetSettingsButton" Content="RESET" Width="120" Height="46" Margin="10,0,0,0" Style="{StaticResource SecondaryButtonStyle}" Click="ResetSettingsButton_Click"/>
+                            </StackPanel>
+                            <TextBlock x:Name="SettingsStatusText" Text="" Foreground="{StaticResource SuccessBrush}" FontSize="12" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                        </Grid>
+                    </StackPanel>
+                </ScrollViewer>
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>

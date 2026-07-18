@@ -1,0 +1,26 @@
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# .NET build output
+[Bb]in/
+[Oo]bj/
+artifacts/
+publish/
+TestResults/
+*.nupkg
+*.snupkg
+
+# Local settings and secrets
+.env
+.env.*
+!.env.example
+appsettings.*.local.json
+*.pfx
+
+# Operating system files
+.DS_Store
+Thumbs.db
