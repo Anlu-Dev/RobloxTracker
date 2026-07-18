@@ -1,6 +1,5 @@
 # 🎯 Roblox Tracker
 
-[![.WEB](https://roblox-tracker.pages.dev/)
 [![.NET](https://img.shields.io/badge/.NET-8.0-512BD4?logo=dotnet&logoColor=white)](https://dotnet.microsoft.com/)
 [![Platform](https://img.shields.io/badge/platform-Windows%20x64-0078D4?logo=windows&logoColor=white)](https://github.com/Anlu-Dev/RobloxTracker/releases)
 [![Release](https://img.shields.io/github/v/release/Anlu-Dev/RobloxTracker?include_prereleases&label=release)](https://github.com/Anlu-Dev/RobloxTracker/releases)
